@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulación de concienciación</title>
+<style>
+  :root{
+    --bg1:#0a0a0c; --bg2:#231016;
+    --red:#e11e1e; --red-dim:#8c0c0c;
+    --text:#d2d2d2; --text-dim:#6e6e6e;
+  }
+  html,body{height:100%;}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg1);}
+  *{box-sizing:border-box;}
+  body{
+    margin:0; height:100%;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    background:radial-gradient(ellipse at center, var(--bg2) 0%, var(--bg1) 70%);
+    color:var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; overflow:hidden;
+  }
+  .lock{width:140px;height:140px;margin-bottom:10px;}
+  h1{
+    color:var(--red); font-size:clamp(28px,5vw,58px); letter-spacing:1px;
+    margin:10px 20px 14px; text-shadow:0 0 18px rgba(225,30,30,.35);
+  }
+  p{font-size:clamp(14px,2vw,18px); color:var(--text); margin:4px 20px; max-width:800px;}
+  .box{
+    margin-top:30px; border:2px solid var(--red-dim); padding:18px 40px;
+    font-family: "Courier New", monospace;
+  }
+  .box .label{font-size:14px; letter-spacing:2px; color:#ccc;}
+  .box .clock{font-size:clamp(32px,6vw,48px); color:var(--red); font-weight:bold; letter-spacing:4px;}
+  .footer-note{margin-top:28px; color:#999; font-size:15px;}
+  .watermark{
+    position:fixed; bottom:calc(14px + env(safe-area-inset-bottom,0px)); right:18px;
+    font-size:12px; color:var(--text-dim); opacity:.7;
+  }
+  .reveal{
+    display:none; max-width:700px; margin-top:28px; padding:24px 28px;
+    border:2px solid #2e7d32; border-radius:10px; background:rgba(46,125,50,.08);
+  }
+  .reveal.show{display:block; animation:fadeIn .6s ease;}
+  .reveal h2{color:#4caf50; margin:0 0 12px; font-size:clamp(20px,3vw,28px);}
+  .reveal p{color:var(--text); text-align:left; margin:8px 0;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+  .fade-out{transition:opacity .5s ease; opacity:0;}
+</style>
+</head>
+<body>
+  <svg class="lock" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 50 85 A 50 50 0 0 1 150 85" fill="none" stroke="#c81e1e" stroke-width="12"/>
+    <rect x="35" y="85" width="130" height="95" rx="14" fill="#8c0c0c" stroke="#e12828" stroke-width="4"/>
+    <circle cx="100" cy="118" r="14" fill="#0a0a0c"/>
+    <polygon points="92,130 108,130 114,158 86,158" fill="#0a0a0c"/>
+  </svg>
+
+  <h1>TUS ARCHIVOS HAN SIDO SECUESTRADOS</h1>
+  <p>Todos tus documentos, fotos y bases de datos han sido cifrados.</p>
+  <p>Sin la clave de descifrado, no volverás a acceder a ellos.</p>
+
+  <div class="box" id="countdownBox">
+    <div class="label">TIEMPO RESTANTE PARA EL PAGO</div>
+    <div class="clock" id="clock">00:00:10</div>
+  </div>
+
+  <p class="footer-note" id="footerNote">Contacta con el remitente de este mensaje antes de que expire el plazo.</p>
+
+  <div class="reveal" id="reveal">
+    <h2>Tranquilo, era una simulación</h2>
+    <p>Esta pantalla ha sido creada por el Departamento de IT como parte de nuestra campaña de concienciación en seguridad. Ningún archivo tuyo ha sido tocado.</p>
+    <p>Así es como se siente un ataque real: urgencia, miedo, presión para actuar rápido. Si alguna vez ves algo parecido, no pagues ni hagas clic en nada — desconecta el equipo de la red y avisa a IT inmediatamente.</p>
+  </div>
+
+  <div class="watermark">SIMULACIÓN DE CONCIENCIACIÓN · Equipo de Seguridad</div>
+
+<script>
+  let total = 10; // cuenta atrás de 10 segundos
+  const el = document.getElementById('clock');
+  const timer = setInterval(tick, 1000);
+  function tick(){
+    const h = String(Math.floor(total/3600)).padStart(2,'0');
+    const m = String(Math.floor((total%3600)/60)).padStart(2,'0');
+    const s = String(total%60).padStart(2,'0');
+    el.textContent = `${h}:${m}:${s}`;
+    if(total <= 0){
+      clearInterval(timer);
+      revealTruth();
+    }
+    total--;
+  }
+  tick();
+
+  function revealTruth(){
+    document.querySelector('h1').classList.add('fade-out');
+    document.querySelectorAll('p').forEach(p => p.classList.add('fade-out'));
+    document.getElementById('countdownBox').classList.add('fade-out');
+    document.querySelector('.lock').classList.add('fade-out');
+    setTimeout(() => {
+      document.getElementById('reveal').classList.add('show');
+    }, 500);
+  }
+</script>
+</body>
+</html>
